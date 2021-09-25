@@ -5,6 +5,8 @@ PSR-15 compatible HTTP middleware which can utilize closure type request handler
 If you don't want to bother about those ugly HTTP controllers and love simplicity,
 this middleware is your best friend.
 
+![phpunit workflow](https://github.com/kovagoz/http-middleware-closure-handler/actions/workflows/php.yml/badge.svg)
+
 ## Requirements
 
 * PHP >=8.0
