@@ -18,7 +18,7 @@ $request = $serverRequestFactory
     ->createServerRequest('GET', '/')
     ->withAttribute('__handler', fn() => 'hello world!');
 
-$middleware = new ClosureHandler(new HttpResponder());
+$middleware = new ClosureHandler($responseFactory, $streamFactory);
 
 $response = $middleware->process($request, $nextHandler);
 
