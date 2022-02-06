@@ -11,12 +11,12 @@
   ],
   "require": {
     "php": "^8.0",
-    "kovagoz/http-responder": "^1.0.0",
     "psr/http-server-middleware": "^1.0.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "phpunit/phpunit": "^9.4.0"
+    "phpunit/phpunit": "^9.4.0",
+    "nyholm/psr7": "^1.5"
   },
   "autoload": {
     "psr-4": {
