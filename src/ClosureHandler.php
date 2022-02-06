@@ -14,16 +14,12 @@ use Psr\Http\Server\RequestHandlerInterface as Handler;
  */
 class ClosureHandler implements MiddlewareInterface
 {
-    private ResponseFactoryInterface $responseFactory;
-    private StreamFactoryInterface   $streamFactory;
-    private string                   $handlerAttribute = '__handler';
+    private string $handlerAttribute = '__handler';
 
     public function __construct(
-        ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface $streamFactory
+        private ResponseFactoryInterface $responseFactory,
+        private StreamFactoryInterface $streamFactory
     ) {
-        $this->responseFactory = $responseFactory;
-        $this->streamFactory   = $streamFactory;
     }
 
     /**
