@@ -2,8 +2,8 @@
 
 namespace Test;
 
+use Kovagoz\Http\HttpResponder;
 use Kovagoz\Http\Middleware\ClosureHandler\ClosureHandler;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,11 +24,16 @@ final class ClosureHandlerTest extends TestCase
         $handler = $this->getMockForAbstractClass(RequestHandlerInterface::class);
         $handler->expects(self::never())->method('handle');
 
-        $middleware = new ClosureHandler(new Psr17Factory(), new Psr17Factory());
+        // Response created from return value of closure
+        $response = $this->getMockForAbstractClass(ResponseInterface::class);
 
-        $response = $middleware->process($request, $handler);
+        // Middleware dependency
+        $responder = $this->createMock(HttpResponder::class);
+        $responder->method('reply')->willReturn($response);
 
-        self::assertEquals('hello world', $response->getBody());
+        $middleware = new ClosureHandler($responder);
+
+        self::assertSame($response, $middleware->process($request, $handler));
     }
 
     public function testChangeRequestAttribute(): void
@@ -44,12 +49,17 @@ final class ClosureHandlerTest extends TestCase
         $handler = $this->getMockForAbstractClass(RequestHandlerInterface::class);
         $handler->expects(self::never())->method('handle');
 
-        $middleware = new ClosureHandler(new Psr17Factory(), new Psr17Factory());
+        // Response created from return value of closure
+        $response = $this->getMockForAbstractClass(ResponseInterface::class);
+
+        // Middleware dependency
+        $responder = $this->createMock(HttpResponder::class);
+        $responder->method('reply')->willReturn($response);
+
+        $middleware = new ClosureHandler($responder);
         $middleware->watchRequestAttribute('__request_handler');
 
-        $response = $middleware->process($request, $handler);
-
-        self::assertEquals('hello world', $response->getBody());
+        self::assertSame($response, $middleware->process($request, $handler));
     }
 
     public function testNoRequestHandlerDefined(): void
@@ -65,7 +75,7 @@ final class ClosureHandlerTest extends TestCase
         $handler = $this->getMockForAbstractClass(RequestHandlerInterface::class);
         $handler->expects(self::once())->method('handle')->willReturn($response);
 
-        $middleware = new ClosureHandler(new Psr17Factory(), new Psr17Factory());
+        $middleware = new ClosureHandler($this->createMock(HttpResponder::class));
 
         // Response from the next middleware should return
         self::assertSame($response, $middleware->process($request, $handler));
@@ -87,7 +97,7 @@ final class ClosureHandlerTest extends TestCase
         $handler = $this->getMockForAbstractClass(RequestHandlerInterface::class);
         $handler->expects(self::once())->method('handle')->willReturn($response);
 
-        $middleware = new ClosureHandler(new Psr17Factory(), new Psr17Factory());
+        $middleware = new ClosureHandler($this->createMock(HttpResponder::class));
 
         // Response from the next middleware should return
         self::assertSame($response, $middleware->process($request, $handler));
